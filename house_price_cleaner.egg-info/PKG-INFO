@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: house_price_cleaner
+Version: 0.0.0
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: scikit-learn
+Requires-Dist: category_encoders
+Requires-Dist: xgboost
