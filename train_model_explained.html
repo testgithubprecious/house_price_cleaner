@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>train_model.py - Kaggle Advanced House Price Prediction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+    h1, h2 {
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    pre {
+      background: #f9f9f9;
+      padding: 10px;
+      border-left: 4px solid #ccc;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>train_model.py - House Price Prediction Using XGBoost</h1>
+
+  <p>This script trains a regression model to predict house prices using the XGBoost algorithm and a custom preprocessing pipeline provided by an external Python package.</p>
+
+  <h2>0. Install the Preprocessing Package</h2>
+  <p>Before running the script, install the preprocessing tool directly from GitHub:</p>
+  <pre><code>pip install git+https://github.com/testgithubprecious/house_price_cleaner.git</code></pre>
+  <p>This package includes the <code>HousePricePreprocessor</code> class that helps clean and transform the data.</p>
+
+  <h2>1. Import Required Libraries</h2>
+  <pre><code>import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+from house_price_cleaner.cleaner import HousePricePreprocessor</code></pre>
+  <p>
+    These libraries handle data manipulation, modeling, and evaluation. 
+    <code>HousePricePreprocessor</code> is imported from your installed package.
+  </p>
+
+  <h2>2. Load the Dataset</h2>
+  <pre><code>df = pd.read_csv("train.csv")
+y = df["SalePrice"]
+X = df.drop(columns=["SalePrice"])</code></pre>
+  <p>
+    Reads the dataset from <code>train.csv</code>. 
+    <code>y</code> is the target variable (SalePrice), and <code>X</code> contains all other features.
+  </p>
+
+  <h2>3. Define Ordinal Mappings</h2>
+  <pre><code>ordinal_mappings = {
+    'ExterQual': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'ExterCond': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'BsmtQual': {'NA': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'BsmtCond': {'NA': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'HeatingQC': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'KitchenQual': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'FireplaceQu': {'NA': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'GarageQual': {'NA': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'GarageCond': {'NA': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+    'PoolQC': {'NA': 0, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5}
+}
+ordinal_features = list(ordinal_mappings.keys())</code></pre>
+  <p>
+    Converts qualitative features into numerical values so the model can understand them.
+    These ordinal mappings help preserve the order of quality levels (e.g., 'Poor' to 'Excellent').
+  </p>
+
+  <h2>4. Initialize and Run the Preprocessor</h2>
+  <pre><code>preprocessor = HousePricePreprocessor(ordinal_mappings, ordinal_features)
+X_processed = preprocessor.fit_transform(X, y)</code></pre>
+  <p>
+    Initializes and applies the preprocessing pipeline to the input data <code>X</code>. 
+    It handles missing values, encodes ordinal features, and prepares the data for modeling.
+  </p>
+
+  <h2>5. Split the Data</h2>
+  <pre><code>X_train, X_val, y_train, y_val = train_test_split(X_processed, y, test_size=0.2, random_state=42)</code></pre>
+  <p>
+    Splits the dataset into training and validation sets. 
+    80% is used for training and 20% for validation.
+    <code>random_state=42</code> ensures results are reproducible.
+  </p>
+
+  <h2>6. Train the Model</h2>
+  <pre><code>model = XGBRegressor(n_estimators=100, learning_rate=0.1)
+model.fit(X_train, y_train)</code></pre>
+  <p>
+    Initializes the XGBoost Regressor with 100 trees and a learning rate of 0.1. 
+    Then fits it to the training data.
+  </p>
+
+  <h2>7. Make Predictions and Evaluate</h2>
+  <pre><code>y_pred = model.predict(X_val)
+rmse = np.sqrt(mean_squared_error(y_val, y_pred))
+r2 = r2_score(y_val, y_pred)</code></pre>
+  <p>
+    Predicts house prices on the validation set and calculates performance metrics:
+    <ul>
+      <li><strong>RMSE</strong> (Root Mean Squared Error) measures average prediction error.</li>
+      <li><strong>R² Score</strong> shows how well the model explains the variation in prices.</li>
+    </ul>
+  </p>
+
+  <h2>8. Display the Results</h2>
+  <pre><code>print("Validation RMSE:", rmse)
+print("Validation R² Score:", r2)</code></pre>
+  <p>
+    Prints the model's performance to the console so you can see how well it's doing on unseen data.
+  </p>
+
+</body>
+</html>
