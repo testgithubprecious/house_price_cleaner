@@ -1,6 +1,6 @@
 #  House Price Cleaner
 
-A powerful preprocessing library built for real-world house price prediction datasets.  
+A powerful preprocessing library built for Kaggle house price advanced regression prediction datasets.  
 This tool streamlines the entire data preparation workflow — from cleaning and encoding to feature engineering and selection.
 
 ---
