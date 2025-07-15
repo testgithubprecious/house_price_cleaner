@@ -1,9 +1,12 @@
-from setuptools import setup, find_packages
+from setuptools import setup, Extension
+from Cython.Build import cythonize
 
 setup(
     name='house_price_cleaner',
-    version='0.1',
-    packages=find_packages(),
+    ext_modules=cythonize([
+        Extension("house_price_cleaner.cleaner", ["house_price_cleaner/cleaner.pyx"])
+    ]),
+    packages=['house_price_cleaner'],
     install_requires=[
         'pandas',
         'numpy',
