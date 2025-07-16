@@ -1,7 +1,11 @@
-#  House Price Cleaner
+# House Price Cleaner
 
-A powerful preprocessing library built for Kaggle house price advanced regression prediction datasets.  
+A powerful preprocessing library built for Kaggle House Price Advanced Regression prediction datasets.  
 This tool streamlines the entire data preparation workflow — from cleaning and encoding to feature engineering and selection.
+
+ **Want to learn how I built this class from scratch?**  
+Check out my step-by-step beginner-friendly book on Selar:  
+🔗 [https://selar.com/2y74rw3227?currency=USD](https://selar.com/2y74rw3227?currency=USD)
 
 ---
 
@@ -19,10 +23,9 @@ This tool streamlines the entire data preparation workflow — from cleaning and
 
 ---
 
-##  Installation
+## Installation
 
 Install directly from GitHub:
 
 ```bash
 pip install git+https://github.com/testgithubprecious/house_price_cleaner.git
-
